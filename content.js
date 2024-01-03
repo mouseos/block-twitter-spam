@@ -1,120 +1,139 @@
-//アラビア語が含まれているか判定する関数
-function is_arabic(str) {
-    let arabic = /[\u0600-\u06FF]/;
-    return arabic.test(str);
+//１文字でもアラビア語があるかどうかを判定する関数
+function containsArabic(text) {
+  // アラビア語の正規表現
+  var arabicRegex = /[\u0600-\u06FF]/;
+
+  // テキスト内でアラビア語が見つかったかどうかを返す
+  return arabicRegex.test(text);
 }
-//urlparameterを取得
-function get_url_parameter(key) {
-    let url = new URL(window.location.href);
-    return url.searchParams.get(key);
+
+
+//絵文字のみで構成されているかどうかを判定する関数
+function isEmojiOnly(text) {
+  // 絵文字の正規表現パターン
+  const emojiPattern = /[\u{1F300}-\u{1FAD6}\u{1F600}-\u{1F64F}\u{1F680}-\u{1F6FF}\u{2600}-\u{26FF}]/u;
+  
+  // テキスト内の各文字が絵文字であるかをチェック
+  for (let i = 0; i < text.length; i++) {
+    if (!text[i].match(emojiPattern)) {
+      return false;
+    }
+  }
+  
+  return true;
 }
-function get_display_user_list() { 
-    //ユーザーリスト保管
-    let user_list = [];
-    let user_infos=document.querySelectorAll('a[role="link"]');
-    user_infos.forEach(function (user_info) {
-        //>div>div>span取得
-        let user_name = user_info.querySelector('div>div>span');
-        if(user_name!=null){
-            user_name = user_name.innerText;
-            //数値しかない場合はスキップ
-            if(!isNaN(user_name)){
-                return;
+
+//特定の文字が含まれているかどうかを判定する関数　関数内で定義済みのリストから検索
+function containsSpecial(text) { 
+    const specialTexts = ["🇸🇦"];
+    for (let i = 0; i < specialTexts.length; i++) {
+        if (text.includes(specialTexts[i])) {
+            return true;
+        }
+    }
+    return false;
+}
+
+
+
+
+// Mutation Observerの設定
+const targetNode = document.body; // 監視対象の要素
+const config = { childList: true, subtree: true };
+let tweets = [];
+let tmp_tweets;//一時的な連想配列
+let menuButton;//メニューボタン
+let reportButton;//報告ボタン
+// 新しいtweet要素が追加された時に行う処理
+const tweetObserverCallback = function(mutationsList, observer) {
+  for(const mutation of mutationsList) {
+    if (mutation.type === 'childList') {
+      // [data-testid="tweet"]要素が追加された場合に実行する処理
+      const newTweets = document.querySelectorAll('[data-testid="tweet"]');
+      
+      // ここで新しいtweet要素に対する処理を行います
+      newTweets.forEach(tweet => {
+            //tweetにあるdata-testid="User-Name"の直下のdivを取得
+            let userName = tweet.querySelector('[data-testid="User-Name"] div');
+            //console.log(userName.textContent);
+            //tweetにあるa hrefを取得
+            let userUrl = tweet.querySelector('a').href;
+            //console.log(userUrl);
+            //userIdを取得 https://twitter.com/を削除する
+            let userId = userUrl.replace('https://twitter.com/', '');
+          //console.log(userId);
+          
+            //文章を取得　data-testid="tweetText"
+          let tweetText = tweet.querySelector('[data-testid="tweetText"]');
+          //teweetTextをtextContentで取得 try catchでエラー回避
+            try {
+                tweetText = tweetText.textContent;
+            } catch (e) {
+                tweetText = ' ';
             }
-        }else{
-            return;
-        }
-        //href取得
-        let user_url = user_info.href;
-        //ユーザー名とURLを表示
-        //console.log(user_name + " : " + user_url);
-        //ユーザーリストに追加(すでにuser_list存在する場合は無視)
-        if (user_list.find(function (user) { return user.name == user_name; }) == undefined) { 
-        user_list.push({name:user_name,url:user_url});
-        }
+          //console.log(tweetText.textContent);
+          
+          //これらをtweetsに連想配列として重複なくpush
+          tmp_tweets={ userName: userName.textContent, userUrl: userUrl, userId: userId };
+          //userNameに１文字でもアラビア語がある場合、もしくはtweetTextが絵文字のみで構成されている場合にコンソールに連想配列出力　push
+          if (containsArabic(userName.textContent) || isEmojiOnly(tweetText) || (containsArabic(tweetText) && !containsArabic(userName.textContent)) || containsSpecial(userName.textContent)) {
+              //tmp_tweetsが既にtweetsに存在しない場合にpush
+                if (tweets.find(function (tweet) { return tweet.userName == userName.textContent; }) == undefined) {
+                    tweets.push(tmp_tweets);
+                    console.log(tweets);
+                    menuButton = (tweet.querySelector('[data-testid="caret"]'));
+                    //menuButtonが存在する場合に処理
+                    if (menuButton != null) {
+                        //menuButtonをクリックする
+                        menuButton.click();
+                        //報告ボタンをクリックする Mutation Observerでrole="group"内を監視し、報告ボタンが出現したらクリックする
+                        const reportObserver = new MutationObserver(function (mutationsList, observer) {
+                            for (const mutation of mutationsList) {
+                                if (mutation.type === 'childList') {
+                                    // role="group"要素が追加された場合に実行する処理
+                                    const reportGroup = document.querySelectorAll('[role="group"]');
+                                    // ここで新しいtweet要素に対する処理を行います
+                                    reportGroup.forEach(group => {
+                                        //groupにあるdata-testid="block"の直下のdivを取得
+                                        let reportButton = group.querySelector('[data-testid="block"]');
+                                        //reportButtonが存在する場合に押す
+                                        if (reportButton != null) {
+                                            reportButton.click();
+                                            //data-testid="confirmationSheetConfirm"クリックする
+                                            let confirmButton = document.querySelector('[data-testid="confirmationSheetConfirm"]');
+                                            confirmButton.click();
+                                                
+                                            
 
-        
-    });
-    return user_list;
-}
-//読み込み完了後に実行されるメイン処理
-function main() {
-    
-    let is_spam = get_url_parameter("spam");
-    //検索画面など通常操作の場合
-    if (is_spam == null) {
-
-        let users = (get_display_user_list());
-        users.forEach(function (user) {
-            //user.nameがアラビア語を含むか
-            if (is_arabic(user.name)) {
-
-                /*//user.urlを新しいタブで開く "?spam=true"
-                if (user.url.indexOf("twitter.com") != -1) {
-                    window.open(user.url + "?spam=true");
-                }*/
-                //新規iframeを作成　ランダムidを付与
-
-                let iframe = document.createElement("iframe");
-                iframe.id = "iframe_" + Math.random().toString(36).slice(-8);
-                iframe.src = user.url;
-                //width=100% height=100%で表示
-                iframe.style.width = "100%";
-                iframe.style.height = "100%";
-                //bodyに追加
-                document.body.appendChild(iframe);
-                //iframeに'[data-testid="userActions"]'が表示されるまで待機　リトライ回数は１０回
-                let retry_count = 0;
-                let timer = setInterval(function () {
-                    let user_actions = iframe.contentDocument.querySelector('[data-testid="userActions"]');
-                    if (user_actions != null) {
-                        //user_actionsが表示されたらクリック(メニュー)
-                        user_actions.click();
-                        //iframeの中の'[data-testid="block"]'の１つ下の要素をクリック（報告）
-                        let block = iframe.contentDocument.querySelector('[data-testid="block"]');
-                        block.nextElementSibling.click();
-                        //「スパム」という文字列が含まれたlabelをクリック(１秒おきに取得しなおしクリック　最大試行回数は１０回)
-                        /*let labels = iframe.contentDocument.querySelectorAll('label');
-                        labels.forEach(function (label) {
-                            console.log(label.innerText);
-                            if (label.innerText.indexOf("スパム") != -1) {
-                                label.click();
-                            }
-                        });*/
-                        let retry_count = 0;
-                        console.log("timer start");
-                        let click_spam = function () {
-                            let labels = iframe.contentDocument.querySelectorAll('label');
-                            labels.forEach(function (label) {
-                                console.log(label.innerText);
-                                if (label.innerText.indexOf("スパム") != -1) {
-                                    label.click();
+                                        }
+                                    });
                                 }
-                            });
-                            retry_count++;
-                            if (retry_count > 10) {
-                                clearInterval(timer);
                             }
-                        }
-                        timer = setInterval(click_spam, 1000);
+                        });
+                        // 監視を開始する
+                        reportObserver.observe(targetNode, config);
+
                         
 
-                        //タイマーを停止
-                        clearInterval(timer);
-                    } else {
-                        //user_actionsが表示されない場合はリトライ
-                        retry_count++;
-                        if (retry_count > 40) {
-                            //リトライ回数が40回を超えたらタイマーを停止
-                            clearInterval(timer);
+                        /*
+                        reportButton = (tweet.querySelector('[data-testid="report"]'));
+                        //reportButtonが存在する場合に押す
+                        if (reportButton != null) {
+                            reportButton.click();
                         }
+                        */
                     }
-                }, 1000);
+                }
             }
-            
-        });
-    }
-}
 
-//5秒後に実行
-setTimeout(main, 10000);
+
+      });
+    }
+  }
+};
+
+// Mutation Observerの作成
+const tweetObserver = new MutationObserver(tweetObserverCallback);
+
+// 監視を開始する
+tweetObserver.observe(targetNode, config);
