@@ -2,6 +2,10 @@
   "manifest_version": 3,
   "name": "Twitterスパム通報",
   "version": "1.0",
+  "permissions": [
+    "browsingData",
+    "declarativeNetRequest"
+  ],
   "description": "スパム自動通報Chrome拡張",
   "background": {
     "service_worker": "background.js"
@@ -17,16 +21,21 @@
       "run_at": "document_end"
     }
   ],
-  "host_permissions": [
-		"<all_urls>"
-	],
-	
-	"icons": {
+  "host_permissions": ["*://*.twitter.com/"],
+  "icons": {
     "16": "icon/icon16.png",
     "32": "icon/icon32.png",
     "48": "icon/icon48.png",
     "128": "icon/icon128.png"
   },
-   "author": "Yuu (@mouse_soft_y)"
-	
+  "author": "Yuu (@mouse_soft_y)",
+  "declarative_net_request": {
+    "rule_resources": [
+      {
+        "id": "ruleset_1",
+        "enabled": true,
+        "path": "rules.json"
+      }
+    ]
+  }
 }
