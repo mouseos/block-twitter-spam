@@ -1,3 +1,28 @@
+//言語処理時に共通言語があるかどうかを判定する関数
+function haveCommonValues(dict1, dict2) {
+    // 辞書から値の配列を取得
+    const values1 = Object.values(dict1);
+    const values2 = Object.values(dict2);
+    
+    // 共通値を格納するためのセットを作成
+    const commonValues = new Set();
+    
+    // 辞書1の値をセットに追加
+    values1.forEach(value => {
+        if (value !== 'unknown') {
+            commonValues.add(value);
+        }
+    });
+    
+    // 辞書2の値と比較して共通値があるかをチェック
+    for (const value of values2) {
+        if (value !== 'unknown' && commonValues.has(value)) {
+            return true;
+        }
+    }
+    
+    return false;
+}
 //テキストに占める日本語の割合を求める関数
 function calc_japanese_ratio(text) {
 	//日本語の文字数を求める
@@ -46,6 +71,20 @@ function calc_emoji_ratio(text) {
 	return emoji_ratio;
 }
 
+//スパムによくある文言を確認する関数
+function check_spam_word(text) {
+	//スパムによくある文言を入れる配列
+	let spam_words = ["お前のプロフ抜けるわ", 'よかったらプロフ見て'];
+	//スパムによくある文言が含まれているか確認
+	let isSpam = false;
+	spam_words.forEach(spam_word => {
+		if (text.includes(spam_word)) {
+			isSpam = true;
+		}
+	});
+	return isSpam;
+}
+
 
 function calc_spam_score(tweet_data) {
 	//tweet_dataの例
@@ -74,6 +113,9 @@ function calc_spam_score(tweet_data) {
 	let isFollowing = tweet_data["isFollowing"];
 	//spam_scoreを計算する
 	let spam_score = 0;
+	//htmlとしてスパムの理由を入れる変数
+	let spam_reason = "";
+	
 	//if (isFollowing) {
 
 	//ツイート本文のアラビア語の割合を求める
@@ -88,7 +130,7 @@ function calc_spam_score(tweet_data) {
 	let arabic_ratio_name = calc_arabic_ratio(tweet_data["quotedUserName"]);
 	//スコアを計算する
 	//スパムが多い国の言語(jaかen以外)の場合
-
+	/*
 	//本文
 	if (tweet_data["lang"] != "ja") {
 		//スコアを30加算する
@@ -144,16 +186,93 @@ function calc_spam_score(tweet_data) {
 		//スコアを30加算する
 		spam_score += 30;
 	}
-
+	*/
 	//}
+	//スパムによくある文言が含まれている場合
+	if (check_spam_word(tweet_data["quotedText"])) {
+		console.log("スパムによくある文言が含まれています");
+		spam_reason+="<p>スパムによくある文言が含まれています</p>";
+		spam_score += 50;
+	}
+	//絵文字の割合が0.5以上の場合
+	if (emoji_ratio >= 0.5) {
+		console.log("絵文字の割合が0.5以上");
+		spam_reason+="<p>絵文字の割合が0.5以上</p>";
+		spam_score += 10;
+	}
+	//プロフィールとツイート本文の言語が異なるかを確認。異なる場合はスコアを10加算する
+	let lang_tweet = detect_lang(tweet_data["quotedText"]);
+	let lang_profile = detect_lang(tweet_data["quotedUserDescription"]);
+	console.log("lang");
+	console.log(lang_tweet);
+	console.log("lang_profile");
+	console.log(lang_profile);
+	
+	//プロフィールとツイート本文の言語が異なる場合primaryとsecondaryの順序は問わないので一致するか確認。
+	if (!haveCommonValues(lang_tweet, lang_profile)) {
+		console.log("ツイート言語とプロフィール言語が異なるためスコアを20加算します");
+		spam_reason+="<p>ツイート言語とプロフィール言語が異なる</p>";
+		spam_score += 20;
+	}
 
-	return spam_score;
+	//アラビア語が含まれている場合
+	if (arabic_ratio > 0) {
+		console.log("アラビア語が含まれているためスコアを20加算します");
+		spam_reason+="<p>アラビア語が含まれている</p>";
+		spam_score += 20;
+	}
+	//blue verifiedの場合
+	if (tweet_data["isBlueVerified"]) {
+		console.log("blue verifiedのためスコアを20加算します");
+		spam_reason+="<p>blue verified</p>";
+		spam_score += 20;
+	}
+
+	//リプに同じ人が2個以上tweet_dataにある場合
+	let quotedScreenName_count = 0;
+	//現在のurlを取得し/status/という文字が含まれる場合
+	if (window.location.href.includes("/status/")) {
+		//tweet_datas[0]のツイート言語とtweet_dataのツイート言語が一致しない場合のみ
+		if(tweet_datas[0]["lang"] != tweet_data["lang"]){
+			console.log("元ツイとツイート言語が異なるためスコアを30加算します");
+			spam_reason+="<p>元ツイとツイート言語が異なる</p>";
+			//スコアを30加算する
+			spam_score += 30;
+		}
+
+		//tweet_datas[0]のユーザー名と一致しない場合のみ
+		console.log("url:" + window.location.href);
+		//tweet_datas[0]["quotedScreenName"] != tweet_data["quotedScreenName"]
+		console.log("tweet_datas[0][\"quotedScreenName\"]:" + tweet_datas[0]["quotedScreenName"]);
+		console.log("tweet_data[\"quotedScreenName\"]:" + tweet_data["quotedScreenName"]);
+		if(tweet_datas[0]["quotedScreenName"] != tweet_data["quotedScreenName"]){
+			tweet_datas.forEach(tweet_data2 => {
+				if (tweet_data2["quotedScreenName"] == tweet_data["quotedScreenName"]) {
+					quotedScreenName_count++;
+				}
+			});
+			if (quotedScreenName_count >= 2) {
+				console.log("リプに同じ人が2個以上いるためスコアを30加算します");
+				spam_reason+="<p>リプに同じ人が2個以上いる</p>";
+				spam_score += 30;
+			}
+		}
+
+	}
+	return {'score': spam_score, 'reason': spam_reason };
 }
 //ツイートとユーザー情報を保存する配列
 let tweet_datas = [];
-
+let url = window.location.href;
 function main() {
 	function save_props() {
+		//urlが変わった場合
+		if (url != window.location.href) {
+			//tweet_datasを初期化
+			tweet_datas = [];
+			//urlを更新
+			url = window.location.href;
+		}
 		// data-testidがcellInnerDivである要素を取得する
 		let elements = document.querySelectorAll('article');
 		// 要素ごとにループ
@@ -167,7 +286,7 @@ function main() {
 
 			// 該当するプロパティがあれば出力
 			if (reactPropsName1) {
-
+				//console.log(element1[reactPropsName1]);
 				const reactProps1 = element1[reactPropsName1];
 				const reactProps2 = element2[reactPropsName2];
 				const ariaLabelledby = reactProps2["aria-labelledby"];
@@ -260,7 +379,7 @@ function main() {
 		});
 
 	}
-
+	
 	//save_props()を実行
 	save_props();
 	//tweet_datasを処理
@@ -268,22 +387,30 @@ function main() {
 		//tweet_dataが処理済みでない場合
 		if (!tweet_data["processed"]) {
 			//スパム確認
-			let score = calc_spam_score(tweet_data);
-
+			let spam_result = calc_spam_score(tweet_data);
+			let score = spam_result["score"];
+			let reason = spam_result["reason"];
 			console.log("tweet_data");
 			console.log(tweet_data);
 			console.log("score");
 			console.log(score);
+			//aria-labelledbyでqueryselectorして背景色を110000にする
+			let tweet_elem = document.querySelector("article[aria-labelledby='" + tweet_data["ariaLabelledby"] + "']");
+
 			//scoreが50以上の場合
 			if (score >= 50) {
 				//通報
 				console.log("通報");
-				//aria-labelledbyでqueryselectorして背景色を110000にする
-				let tweet_elem = document.querySelector("article[aria-labelledby='" + tweet_data["ariaLabelledby"] + "']");
-				console.log("tweet_elem");
-				console.log(tweet_elem);
+				
 				tweet_elem.style.backgroundColor = "#ff0000";
+				
+
 			}
+			//理由を表示
+			let reason_elem = document.createElement("div");
+			reason_elem.innerHTML = reason;
+			//要素の外側（下）に追加
+			tweet_elem.after(reason_elem);
 			//tweet_dataを処理済みにする
 			tweet_data["processed"] = true;
 		}
