@@ -3,24 +3,24 @@ function haveCommonValues(dict1, dict2) {
     // 辞書から値の配列を取得
     const values1 = Object.values(dict1);
     const values2 = Object.values(dict2);
-    
+
     // 共通値を格納するためのセットを作成
     const commonValues = new Set();
-    
+
     // 辞書1の値をセットに追加
     values1.forEach(value => {
         if (value !== 'unknown') {
             commonValues.add(value);
         }
     });
-    
+
     // 辞書2の値と比較して共通値があるかをチェック
     for (const value of values2) {
         if (value !== 'unknown' && commonValues.has(value)) {
             return true;
         }
     }
-    
+
     return false;
 }
 //テキストに占める日本語の割合を求める関数
@@ -115,7 +115,7 @@ function calc_spam_score(tweet_data) {
 	let spam_score = 0;
 	//htmlとしてスパムの理由を入れる変数
 	let spam_reason = "";
-	
+
 	//if (isFollowing) {
 
 	//ツイート本文のアラビア語の割合を求める
@@ -207,7 +207,7 @@ function calc_spam_score(tweet_data) {
 	console.log(lang_tweet);
 	console.log("lang_profile");
 	console.log(lang_profile);
-	
+
 	//プロフィールとツイート本文の言語が異なる場合primaryとsecondaryの順序は問わないので一致するか確認。
 	if (!haveCommonValues(lang_tweet, lang_profile)) {
 		console.log("ツイート言語とプロフィール言語が異なるためスコアを20加算します");
@@ -379,7 +379,7 @@ function main() {
 		});
 
 	}
-	
+
 	//save_props()を実行
 	save_props();
 	//tweet_datasを処理
@@ -401,9 +401,9 @@ function main() {
 			if (score >= 50) {
 				//通報
 				console.log("通報");
-				
+
 				tweet_elem.style.backgroundColor = "#ff0000";
-				
+
 
 			}
 			//理由を表示
