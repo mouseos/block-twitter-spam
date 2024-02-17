@@ -1,3 +1,13 @@
+/**
+ * @typedef {Object} LangInfo - ツイートの主言語を示すオブジェクト
+ * @property {string} primary - 最も可能性が高い言語
+ * @property {string?} secondary - 2番目に可能性が高い言語
+ */
+
+/**
+ * 種類ごとに文字を分類する連想配列。
+ * @type {Object<string, Array<Array<number> | number>>}
+ */
 var characterRanges = {
     'ja': [
         [0x3040, 0x309F], // ひらがな
@@ -29,6 +39,12 @@ var characterRanges = {
     'emoji': [0x1F300, 0x1F5FF] // 絵文字
 };
 
+/**
+ * ツイートの主言語を推測する。
+ *
+ * @param {string} text - ツイートのテキスト
+ * @returns {LangInfo} 推測したツイートの主言語
+ */
 function detect_lang(text) {
     var langStats = {};
     var totalCount = 0;

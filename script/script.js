@@ -1,10 +1,44 @@
-//言語処理時に共通言語があるかどうかを判定する関数
+/**
+ * @typedef {Object} TweetData - ツイートのデータ
+ * @property {string} lang - ツイートの言語を示す言語コード
+ * @property {string} ariaLabelledby
+ * @property {string} quotedUserName - ツイートしたユーザーの名前
+ * @property {string} quotedScreenName - ツイートしたユーザーの表示名（ID）
+ * @property {string} quotedExpandedUrl - リンクカードに展開するURL
+ * @property {string} quotedText - ツイート本文
+ * @property {string} quotedUserDescription - ツイートしたユーザーのプロフィール
+ * @property {boolean} isTranslator
+ * @property {string} translatorType
+ * @property {boolean} isVerified - 認証済みかどうか
+ * @property {boolean} isBlueVerified - Twitter Blueで認証されているかどうか
+ * @property {number} favoritesCount - ツイートしたユーザーのいいね数
+ * @property {number} followersCount - ツイートしたユーザーのフォロワー数
+ * @property {any?} isFollowing - ツイートしたユーザーをフォローしているかどうか
+ * @property {number} friendsCount - ツイートしたユーザーがフォローしているアカウントの数
+ * @property {number} statusesCount - ツイートしたユーザーの総ツイート数
+ * @property {boolean} processed - 処理済みかどうか
+ *
+ * @typedef {Object} SpamInfo - スパムの情報
+ * @property {number} score - スパムスコア
+ * @property {string} reason - 判定の理由
+ */
+
+/**
+ * 2つの辞書が共通の値を持っているかどうかを確認する。
+ *
+ * @param {Object<any, any>} dict1 - 辞書1
+ * @param {Object<any, any>} dict2 - 辞書2
+ * @returns {boolean} 2つの辞書が共通の値を持っている場合はtrue、そうでない場合はfalse
+ */
 function haveCommonValues(dict1, dict2) {
     // 辞書から値の配列を取得
     const values1 = Object.values(dict1);
     const values2 = Object.values(dict2);
 
-    // 共通値を格納するためのセットを作成
+    /**
+     * 共通値を格納するためのセット。
+     * @type {Set<any>}
+     */
     const commonValues = new Set();
 
     // 辞書1の値をセットに追加
@@ -23,7 +57,13 @@ function haveCommonValues(dict1, dict2) {
 
     return false;
 }
-//テキストに占める日本語の割合を求める関数
+
+/**
+ * テキストに占める日本語の割合を求める。
+ *
+ * @param {string} text - 判定するテキスト
+ * @returns {number} 日本語の割合
+ */
 function calc_japanese_ratio(text) {
 	//日本語の文字数を求める
 	let japanese_count = 0;
@@ -35,9 +75,14 @@ function calc_japanese_ratio(text) {
 	//日本語の文字数をテキストの文字数で割る
 	let japanese_ratio = japanese_count / text.length;
 	return japanese_ratio;
-
 }
-//テキストに占めるアラビア語の割合を求める関数
+
+/**
+ * テキストに占めるアラビア語の割合を求める。
+ *
+ * @param {string} text - 判定するテキスト
+ * @returns {number} アラビア語の割合
+ */
 function calc_arabic_ratio(text) {
 	//アラビア語の文字数を求める
 	let arabic_count = 0;
@@ -51,7 +96,12 @@ function calc_arabic_ratio(text) {
 	return arabic_ratio;
 }
 
-//テキストの絵文字の個数を求める関数
+/**
+ * テキストの絵文字の個数を求める。
+ *
+ * @param {string} text - 判定するテキスト
+ * @returns {number} 絵文字の個数
+ */
 function calc_emoji_count(text) {
 	//絵文字の個数を求める
 	let emoji_count = 0;
@@ -62,7 +112,13 @@ function calc_emoji_count(text) {
 	}
 	return emoji_count;
 }
-//テキストに占める絵文字の割合を求める関数
+
+/**
+ * テキストに占める絵文字の割合を求める。
+ *
+ * @param {string} text - 判定するテキスト
+ * @returns {number} 絵文字の割合
+ */
 function calc_emoji_ratio(text) {
 	//絵文字の個数を求める
 	let emoji_count = calc_emoji_count(text);
@@ -71,9 +127,17 @@ function calc_emoji_ratio(text) {
 	return emoji_ratio;
 }
 
-//スパムによくある文言を確認する関数
+/**
+ * スパムによくある文言が含まれているか確認する。
+ *
+ * @param {string} text - 判定するテキスト
+ * @returns {boolean} スパムによくある文言が含まれていた場合はtrue, そうでない場合はfalse
+ */
 function check_spam_word(text) {
-	//スパムによくある文言を入れる配列
+	/**
+   * スパムによくある文言を入れる配列。
+   * @type {Array<string>}
+   */
 	let spam_words = ["お前のプロフ抜けるわ", 'よかったらプロフ見て'];
 	//スパムによくある文言が含まれているか確認
 	let isSpam = false;
@@ -85,7 +149,12 @@ function check_spam_word(text) {
 	return isSpam;
 }
 
-
+/**
+ * ツイートがスパムかどうか判定する。
+ *
+ * @param {TweetData} tweet_data - ツイートのデータ
+ * @returns {SpamInfo} スパム判定の結果
+ */
 function calc_spam_score(tweet_data) {
 	//tweet_dataの例
 	/*
@@ -261,9 +330,17 @@ function calc_spam_score(tweet_data) {
 	}
 	return {'score': spam_score, 'reason': spam_reason };
 }
-//ツイートとユーザー情報を保存する配列
+
+/**
+ * ツイートとユーザー情報を保存する配列。
+ * @type {Array<TweetData>}
+ */
 let tweet_datas = [];
 let url = window.location.href;
+
+/**
+ * ツイートの解析を行う。
+ */
 function main() {
 	function save_props() {
 		//urlが変わった場合
