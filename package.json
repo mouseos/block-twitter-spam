@@ -1,0 +1,25 @@
+{
+  "name": "block-twitter-spam",
+  "version": "0.1.0",
+  "private": true,
+  "description": "",
+  "homepage": "https://github.com/mouseos/block-twitter-spam",
+  "bugs": {
+    "url": "https://github.com/mouseos/block-twitter-spam/issues"
+  },
+  "license": "",
+  "author": {
+    "name": "yuu"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mouseos/block-twitter-spam.git"
+  },
+  "scripts": {
+    "build": "echo \"Error: no build specified\" && exit 1",
+    "lint": "echo \"Error: no lint specified\" && exit 1",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {},
+  "devDependencies": {}
+}
