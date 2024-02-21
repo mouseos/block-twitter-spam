@@ -1,0 +1,52 @@
+name: Test
+
+on:
+  push:
+    paths:
+      - '**/*.js'
+      - 'package.json'
+      - 'package-lock.json'
+
+  workflow_dispatch:
+    inputs:
+      autofix:
+        description: 'Autofix by ESLint'
+        required: false
+        type: boolean
+
+jobs:
+  eslint:
+    name: ESLint
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+      - name: Install dependencies
+        run: npm install
+      - name: Run ESLint
+        if: ${{ !inputs.autofix }}
+        run: npm run lint
+      - name: Run ESLint (autofix)
+        id: eslint_autofix
+        if: ${{ inputs.autofix }}
+        run: npm run lint:fix
+        continue-on-error: true
+      - name: Push to GitHub
+        if: ${{ inputs.autofix }}
+        uses: EndBug/add-and-commit@v9.1.4
+        with:
+          author_name: 'GitHub Actions'
+          author_email: 'action@github.com'
+          message: |
+            :art: Autofix by ESLint
+
+            Co-authored-by: ${{ github.actor }} <${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com>
+      - name: Post Run ESLint (autofix)
+        if: ${{ steps.eslint_autofix.outcome == 'failure' }}
+        run: exit 1
