@@ -6,6 +6,7 @@ on:
       - '**/*.js'
       - 'package.json'
       - 'package-lock.json'
+      - '.eslintrc.json'
 
   workflow_dispatch:
     inputs:
