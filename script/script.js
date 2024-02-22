@@ -200,62 +200,62 @@ function calc_spam_score(tweet_data) {
   // スコアを計算する
   // スパムが多い国の言語(jaかen以外)の場合
   /*
-	//本文
-	if (tweet_data["lang"] != "ja") {
-		//スコアを30加算する
-		spam_score += 30;
-		//中東系ならスコアをさらに10加算する
-		let middle_eastern = ["ar", "fa", "ur", "ps", "sd", "ku", "ckb", "ha", "yi", "he"];
-		if (middle_eastern.includes(tweet_data["lang"])) {
-			spam_score += 10;
-		}
-		//英語ならスコアを20減算する
-		if (tweet_data["lang"] == "en") {
-			spam_score -= 20;
-		}
-	}
-	//プロフィールに日本語が含まれていない場合
-	if (calc_japanese_ratio(tweet_data["quotedUserDescription"]) <= 0.1) {
-		//スコアを30加算する
-		spam_score += 10;
-	}
-	//プロフィールのアラビア語の割合が0.1以上の場合
+  //本文
+  if (tweet_data["lang"] != "ja") {
+    //スコアを30加算する
+    spam_score += 30;
+    //中東系ならスコアをさらに10加算する
+    let middle_eastern = ["ar", "fa", "ur", "ps", "sd", "ku", "ckb", "ha", "yi", "he"];
+    if (middle_eastern.includes(tweet_data["lang"])) {
+      spam_score += 10;
+    }
+    //英語ならスコアを20減算する
+    if (tweet_data["lang"] == "en") {
+      spam_score -= 20;
+    }
+  }
+  //プロフィールに日本語が含まれていない場合
+  if (calc_japanese_ratio(tweet_data["quotedUserDescription"]) <= 0.1) {
+    //スコアを30加算する
+    spam_score += 10;
+  }
+  //プロフィールのアラビア語の割合が0.1以上の場合
 
-	if (arabic_ratio_profile >= 0.1) {
-		//スコアを30加算する
-		spam_score += 30;
-	}
+  if (arabic_ratio_profile >= 0.1) {
+    //スコアを30加算する
+    spam_score += 30;
+  }
 
-	//文字数が10以下で絵文字の割合が0.5以上の場合
-	if (tweet_data["quotedText"].length <= 10 && emoji_ratio >= 0.5) {
-		//スコアを30加算する
-		spam_score += 30;
-	}
+  //文字数が10以下で絵文字の割合が0.5以上の場合
+  if (tweet_data["quotedText"].length <= 10 && emoji_ratio >= 0.5) {
+    //スコアを30加算する
+    spam_score += 30;
+  }
 
-	//プロフィールが空の場合
-	if (tweet_data["quotedUserDescription"] == null) {
-		//スコアを30加算する
-		spam_score += 30;
-	}
+  //プロフィールが空の場合
+  if (tweet_data["quotedUserDescription"] == null) {
+    //スコアを30加算する
+    spam_score += 30;
+  }
 
-	//blue verifiedの場合
-	if (tweet_data["isBlueVerified"]) {
-		//スコアを30加算する
-		spam_score += 40;
-	}
+  //blue verifiedの場合
+  if (tweet_data["isBlueVerified"]) {
+    //スコアを30加算する
+    spam_score += 40;
+  }
 
-	//quotedScreenNameが2個以上tweet_dataにある場合
-	let quotedScreenName_count = 0;
-	tweet_datas.forEach(tweet_data2 => {
-		if (tweet_data2["quotedScreenName"] == tweet_data["quotedScreenName"]) {
-			quotedScreenName_count++;
-		}
-	});
-	if (quotedScreenName_count >= 2) {
-		//スコアを30加算する
-		spam_score += 30;
-	}
-	*/
+  //quotedScreenNameが2個以上tweet_dataにある場合
+  let quotedScreenName_count = 0;
+  tweet_datas.forEach(tweet_data2 => {
+    if (tweet_data2["quotedScreenName"] == tweet_data["quotedScreenName"]) {
+      quotedScreenName_count++;
+    }
+  });
+  if (quotedScreenName_count >= 2) {
+    //スコアを30加算する
+    spam_score += 30;
+  }
+  */
   // }
   // スパムによくある文言が含まれている場合
   if (check_spam_word(tweet_data['quotedText'])) {
@@ -386,40 +386,40 @@ function main() {
 
 
         /*
-				//すべての変数を表示
-				console.log("ariaLabelledby");
-				console.log(ariaLabelledby);
-				console.log("lang");
-				console.log(lang);
-				console.log("quotedUserName");
-				console.log(quotedUserName);
-				console.log("quotedScreenName");
-				console.log(quotedScreenName);
-				console.log("quotedExpandedUrl");
-				console.log(quotedExpandedUrl);
-				console.log("quotedText");
-				console.log(quotedText);
-				console.log("quotedUserDescription");
-				console.log(quotedUserDescription);
-				console.log("isTranslator");
-				console.log(isTranslator);
-				console.log("translatorType");
-				console.log(translatorType);
-				console.log("isVerified");
-				console.log(isVerified);
-				console.log("isBlueVerified");
-				console.log(isBlueVerified);
-				console.log("favoritesCount");
-				console.log(favoritesCount);
-				console.log("followersCount");
-				console.log(followersCount);
-				console.log("isFollowing");
-				console.log(isFollowing);
-				console.log("friendsCount");
-				console.log(friendsCount);
-				console.log("statusesCount");
-				console.log(statusesCount);
-				*/
+        //すべての変数を表示
+        console.log("ariaLabelledby");
+        console.log(ariaLabelledby);
+        console.log("lang");
+        console.log(lang);
+        console.log("quotedUserName");
+        console.log(quotedUserName);
+        console.log("quotedScreenName");
+        console.log(quotedScreenName);
+        console.log("quotedExpandedUrl");
+        console.log(quotedExpandedUrl);
+        console.log("quotedText");
+        console.log(quotedText);
+        console.log("quotedUserDescription");
+        console.log(quotedUserDescription);
+        console.log("isTranslator");
+        console.log(isTranslator);
+        console.log("translatorType");
+        console.log(translatorType);
+        console.log("isVerified");
+        console.log(isVerified);
+        console.log("isBlueVerified");
+        console.log(isBlueVerified);
+        console.log("favoritesCount");
+        console.log(favoritesCount);
+        console.log("followersCount");
+        console.log(followersCount);
+        console.log("isFollowing");
+        console.log(isFollowing);
+        console.log("friendsCount");
+        console.log(friendsCount);
+        console.log("statusesCount");
+        console.log(statusesCount);
+        */
         // tmp_dataを作成
         tmp_data['lang'] = lang;
         tmp_data['ariaLabelledby'] = ariaLabelledby;
