@@ -54,7 +54,7 @@ function detect_lang(text) {
     const charCode = text.charCodeAt(i);
     let found = false;
 
-    for (var lang in characterRanges) {
+    for (const lang in characterRanges) {
       if (!langStats[lang]) {
         langStats[lang] = 0;
       }
@@ -93,7 +93,7 @@ function detect_lang(text) {
 
   // 言語判定
   const langPercentages = [];
-  for (var lang in langStats) {
+  for (const lang in langStats) {
     const percentage = langStats[lang] / totalCount;
     langPercentages.push({lang: lang, percentage: percentage});
   }
