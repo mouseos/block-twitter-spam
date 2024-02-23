@@ -341,6 +341,9 @@ let url = window.location.href;
  * ツイートの解析を行う。
  */
 function main() {
+  /**
+   * ツイートを解析し保存する。
+   */
   function save_props() {
     // urlが変わった場合
     if (url != window.location.href) {
