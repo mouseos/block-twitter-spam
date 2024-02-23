@@ -64,17 +64,17 @@ function haveCommonValues(dict1, dict2) {
  * @param {string} text - 判定するテキスト
  * @return {number} 日本語の割合
  */
-function calc_japanese_ratio(text) {
+function calcJapaneseRatio(text) {
   // 日本語の文字数を求める
-  let japanese_count = 0;
+  let japaneseCount = 0;
   for (let i = 0; i < text.length; i++) {
     if (text[i].match(/[\u3040-\u309F]|[\u30A0-\u30FF]|[\uFF65-\uFF9F]/)) {
-      japanese_count++;
+      japaneseCount++;
     }
   }
   // 日本語の文字数をテキストの文字数で割る
-  const japanese_ratio = japanese_count / text.length;
-  return japanese_ratio;
+  const japaneseRatio = japaneseCount / text.length;
+  return japaneseRatio;
 }
 
 /**
@@ -83,17 +83,17 @@ function calc_japanese_ratio(text) {
  * @param {string} text - 判定するテキスト
  * @return {number} アラビア語の割合
  */
-function calc_arabic_ratio(text) {
+function calcArabicRatio(text) {
   // アラビア語の文字数を求める
-  let arabic_count = 0;
+  let arabicCount = 0;
   for (let i = 0; i < text.length; i++) {
     if (text[i].match(/[\u0600-\u06FF]/)) {
-      arabic_count++;
+      arabicCount++;
     }
   }
   // アラビア語の文字数をテキストの文字数で割る
-  const arabic_ratio = arabic_count / text.length;
-  return arabic_ratio;
+  const arabicRatio = arabicCount / text.length;
+  return arabicRatio;
 }
 
 /**
@@ -102,15 +102,15 @@ function calc_arabic_ratio(text) {
  * @param {string} text - 判定するテキスト
  * @return {number} 絵文字の個数
  */
-function calc_emoji_count(text) {
+function calcEmojiCount(text) {
   // 絵文字の個数を求める
-  let emoji_count = 0;
+  let emojiCount = 0;
   for (let i = 0; i < text.length; i++) {
     if (text[i].match(/\p{Emoji}/u)) {
-      emoji_count++;
+      emojiCount++;
     }
   }
-  return emoji_count;
+  return emojiCount;
 }
 
 /**
@@ -119,12 +119,12 @@ function calc_emoji_count(text) {
  * @param {string} text - 判定するテキスト
  * @return {number} 絵文字の割合
  */
-function calc_emoji_ratio(text) {
+function calcEmojiRatio(text) {
   // 絵文字の個数を求める
-  const emoji_count = calc_emoji_count(text);
+  const emojiCount = calcEmojiCount(text);
   // 絵文字の個数をテキストの文字数で割る
-  const emoji_ratio = emoji_count / text.length;
-  return emoji_ratio;
+  const emojiRatio = emojiCount / text.length;
+  return emojiRatio;
 }
 
 /**
@@ -133,16 +133,16 @@ function calc_emoji_ratio(text) {
  * @param {string} text - 判定するテキスト
  * @return {boolean} スパムによくある文言が含まれていた場合はtrue, そうでない場合はfalse
  */
-function check_spam_word(text) {
+function checkSpamWord(text) {
   /**
    * スパムによくある文言を入れる配列。
    * @type {Array<string>}
    */
-  const spam_words = ['お前のプロフ抜けるわ', 'よかったらプロフ見て'];
+  const spamWords = ['お前のプロフ抜けるわ', 'よかったらプロフ見て'];
   // スパムによくある文言が含まれているか確認
   let isSpam = false;
-  spam_words.forEach((spam_word) => {
-    if (text.includes(spam_word)) {
+  spamWords.forEach((spamWord) => {
+    if (text.includes(spamWord)) {
       isSpam = true;
     }
   });
@@ -152,11 +152,11 @@ function check_spam_word(text) {
 /**
  * ツイートがスパムかどうか判定する。
  *
- * @param {TweetData} tweet_data - ツイートのデータ
+ * @param {TweetData} tweetData - ツイートのデータ
  * @return {SpamInfo} スパム判定の結果
  */
-function calc_spam_score(tweet_data) {
-  // tweet_dataの例
+function calcSpamScore(tweetData) {
+  // tweetDataの例
   /*
     {
     "lang": "ja",
@@ -179,162 +179,162 @@ function calc_spam_score(tweet_data) {
 }
     */
   // フォローしているか確認
-  const isFollowing = tweet_data['isFollowing'];
-  // spam_scoreを計算する
-  let spam_score = 0;
+  const isFollowing = tweetData['isFollowing'];
+  // spamScoreを計算する
+  let spamScore = 0;
   // htmlとしてスパムの理由を入れる変数
-  let spam_reason = '';
+  let spamReason = '';
 
   // if (isFollowing) {
 
   // ツイート本文のアラビア語の割合を求める
-  const arabic_ratio = calc_arabic_ratio(tweet_data['quotedText']);
+  const arabicRatio = calcArabicRatio(tweetData['quotedText']);
   // ツイート本文の絵文字の割合を求める
-  const emoji_ratio = calc_emoji_ratio(tweet_data['quotedText']);
+  const emojiRatio = calcEmojiRatio(tweetData['quotedText']);
   // プロフィール文のアラビア語の割合を求める
-  const arabic_ratio_profile = calc_arabic_ratio(tweet_data['quotedUserDescription']);
+  const arabicRatioProfile = calcArabicRatio(tweetData['quotedUserDescription']);
   // プロフィール文の文字数を求める
-  const profile_length = tweet_data['quotedUserDescription'].length;
+  const profileLength = tweetData['quotedUserDescription'].length;
   // ユーザー名のアラビア語の割合を求める
-  const arabic_ratio_name = calc_arabic_ratio(tweet_data['quotedUserName']);
+  const arabicRatioName = calcArabicRatio(tweetData['quotedUserName']);
   // スコアを計算する
   // スパムが多い国の言語(jaかen以外)の場合
   /*
   //本文
-  if (tweet_data["lang"] != "ja") {
+  if (tweetData["lang"] != "ja") {
     //スコアを30加算する
-    spam_score += 30;
+    spamScore += 30;
     //中東系ならスコアをさらに10加算する
-    let middle_eastern = ["ar", "fa", "ur", "ps", "sd", "ku", "ckb", "ha", "yi", "he"];
-    if (middle_eastern.includes(tweet_data["lang"])) {
-      spam_score += 10;
+    let middleEastern = ["ar", "fa", "ur", "ps", "sd", "ku", "ckb", "ha", "yi", "he"];
+    if (middleEastern.includes(tweetData["lang"])) {
+      spamScore += 10;
     }
     //英語ならスコアを20減算する
-    if (tweet_data["lang"] == "en") {
-      spam_score -= 20;
+    if (tweetData["lang"] == "en") {
+      spamScore -= 20;
     }
   }
   //プロフィールに日本語が含まれていない場合
-  if (calc_japanese_ratio(tweet_data["quotedUserDescription"]) <= 0.1) {
+  if (calcJapaneseRatio(tweetData["quotedUserDescription"]) <= 0.1) {
     //スコアを30加算する
-    spam_score += 10;
+    spamScore += 10;
   }
   //プロフィールのアラビア語の割合が0.1以上の場合
 
-  if (arabic_ratio_profile >= 0.1) {
+  if (arabicRatioProfile >= 0.1) {
     //スコアを30加算する
-    spam_score += 30;
+    spamScore += 30;
   }
 
   //文字数が10以下で絵文字の割合が0.5以上の場合
-  if (tweet_data["quotedText"].length <= 10 && emoji_ratio >= 0.5) {
+  if (tweetData["quotedText"].length <= 10 && emojiRatio >= 0.5) {
     //スコアを30加算する
-    spam_score += 30;
+    spamScore += 30;
   }
 
   //プロフィールが空の場合
-  if (tweet_data["quotedUserDescription"] == null) {
+  if (tweetData["quotedUserDescription"] == null) {
     //スコアを30加算する
-    spam_score += 30;
+    spamScore += 30;
   }
 
   //blue verifiedの場合
-  if (tweet_data["isBlueVerified"]) {
+  if (tweetData["isBlueVerified"]) {
     //スコアを30加算する
-    spam_score += 40;
+    spamScore += 40;
   }
 
-  //quotedScreenNameが2個以上tweet_dataにある場合
-  let quotedScreenName_count = 0;
-  tweet_datas.forEach(tweet_data2 => {
-    if (tweet_data2["quotedScreenName"] == tweet_data["quotedScreenName"]) {
-      quotedScreenName_count++;
+  //quotedScreenNameが2個以上tweetDataにある場合
+  let quotedScreenNameCount = 0;
+  tweetDatas.forEach(tweetData2 => {
+    if (tweetData2["quotedScreenName"] == tweetData["quotedScreenName"]) {
+      quotedScreenNameCount++;
     }
   });
-  if (quotedScreenName_count >= 2) {
+  if (quotedScreenNameCount >= 2) {
     //スコアを30加算する
-    spam_score += 30;
+    spamScore += 30;
   }
   */
   // }
   // スパムによくある文言が含まれている場合
-  if (check_spam_word(tweet_data['quotedText'])) {
+  if (checkSpamWord(tweetData['quotedText'])) {
     console.log('スパムによくある文言が含まれています');
-    spam_reason+='<p>スパムによくある文言が含まれています</p>';
-    spam_score += 50;
+    spamReason+='<p>スパムによくある文言が含まれています</p>';
+    spamScore += 50;
   }
   // 絵文字の割合が0.5以上の場合
-  if (emoji_ratio >= 0.5) {
+  if (emojiRatio >= 0.5) {
     console.log('絵文字の割合が0.5以上');
-    spam_reason+='<p>絵文字の割合が0.5以上</p>';
-    spam_score += 10;
+    spamReason+='<p>絵文字の割合が0.5以上</p>';
+    spamScore += 10;
   }
   // プロフィールとツイート本文の言語が異なるかを確認。異なる場合はスコアを10加算する
-  const lang_tweet = detect_lang(tweet_data['quotedText']);
-  const lang_profile = detect_lang(tweet_data['quotedUserDescription']);
+  const langTweet = detect_lang(tweetData['quotedText']);
+  const langProfile = detect_lang(tweetData['quotedUserDescription']);
   console.log('lang');
-  console.log(lang_tweet);
-  console.log('lang_profile');
-  console.log(lang_profile);
+  console.log(langTweet);
+  console.log('langProfile');
+  console.log(langProfile);
 
   // プロフィールとツイート本文の言語が異なる場合primaryとsecondaryの順序は問わないので一致するか確認。
-  if (!haveCommonValues(lang_tweet, lang_profile)) {
+  if (!haveCommonValues(langTweet, langProfile)) {
     console.log('ツイート言語とプロフィール言語が異なるためスコアを20加算します');
-    spam_reason+='<p>ツイート言語とプロフィール言語が異なる</p>';
-    spam_score += 20;
+    spamReason+='<p>ツイート言語とプロフィール言語が異なる</p>';
+    spamScore += 20;
   }
 
   // アラビア語が含まれている場合
-  if (arabic_ratio > 0) {
+  if (arabicRatio > 0) {
     console.log('アラビア語が含まれているためスコアを20加算します');
-    spam_reason+='<p>アラビア語が含まれている</p>';
-    spam_score += 20;
+    spamReason+='<p>アラビア語が含まれている</p>';
+    spamScore += 20;
   }
   // blue verifiedの場合
-  if (tweet_data['isBlueVerified']) {
+  if (tweetData['isBlueVerified']) {
     console.log('blue verifiedのためスコアを20加算します');
-    spam_reason+='<p>blue verified</p>';
-    spam_score += 20;
+    spamReason+='<p>blue verified</p>';
+    spamScore += 20;
   }
 
-  // リプに同じ人が2個以上tweet_dataにある場合
-  let quotedScreenName_count = 0;
+  // リプに同じ人が2個以上tweetDataにある場合
+  let quotedScreenNameCount = 0;
   // 現在のurlを取得し/status/という文字が含まれる場合
   if (window.location.href.includes('/status/')) {
-    // tweet_datas[0]のツイート言語とtweet_dataのツイート言語が一致しない場合のみ
-    if (tweet_datas[0]['lang'] != tweet_data['lang']) {
+    // tweetDatas[0]のツイート言語とtweetDataのツイート言語が一致しない場合のみ
+    if (tweetDatas[0]['lang'] != tweetData['lang']) {
       console.log('元ツイとツイート言語が異なるためスコアを30加算します');
-      spam_reason+='<p>元ツイとツイート言語が異なる</p>';
+      spamReason+='<p>元ツイとツイート言語が異なる</p>';
       // スコアを30加算する
-      spam_score += 30;
+      spamScore += 30;
     }
 
-    // tweet_datas[0]のユーザー名と一致しない場合のみ
+    // tweetDatas[0]のユーザー名と一致しない場合のみ
     console.log('url:' + window.location.href);
-    // tweet_datas[0]["quotedScreenName"] != tweet_data["quotedScreenName"]
-    console.log('tweet_datas[0]["quotedScreenName"]:' + tweet_datas[0]['quotedScreenName']);
-    console.log('tweet_data["quotedScreenName"]:' + tweet_data['quotedScreenName']);
-    if (tweet_datas[0]['quotedScreenName'] != tweet_data['quotedScreenName']) {
-      tweet_datas.forEach((tweet_data2) => {
-        if (tweet_data2['quotedScreenName'] == tweet_data['quotedScreenName']) {
-          quotedScreenName_count++;
+    // tweetDatas[0]["quotedScreenName"] != tweetData["quotedScreenName"]
+    console.log('tweetDatas[0]["quotedScreenName"]:' + tweetDatas[0]['quotedScreenName']);
+    console.log('tweetData["quotedScreenName"]:' + tweetData['quotedScreenName']);
+    if (tweetDatas[0]['quotedScreenName'] != tweetData['quotedScreenName']) {
+      tweetDatas.forEach((tweetData2) => {
+        if (tweetData2['quotedScreenName'] == tweetData['quotedScreenName']) {
+          quotedScreenNameCount++;
         }
       });
-      if (quotedScreenName_count >= 2) {
+      if (quotedScreenNameCount >= 2) {
         console.log('リプに同じ人が2個以上いるためスコアを30加算します');
-        spam_reason+='<p>リプに同じ人が2個以上いる</p>';
-        spam_score += 30;
+        spamReason+='<p>リプに同じ人が2個以上いる</p>';
+        spamScore += 30;
       }
     }
   }
-  return {'score': spam_score, 'reason': spam_reason};
+  return {'score': spamScore, 'reason': spamReason};
 }
 
 /**
  * ツイートとユーザー情報を保存する配列。
  * @type {Array<TweetData>}
  */
-let tweet_datas = [];
+let tweetDatas = [];
 let url = window.location.href;
 
 /**
@@ -344,11 +344,11 @@ function main() {
   /**
    * ツイートを解析し保存する。
    */
-  function save_props() {
+  function saveProps() {
     // urlが変わった場合
     if (url != window.location.href) {
-      // tweet_datasを初期化
-      tweet_datas = [];
+      // tweetDatasを初期化
+      tweetDatas = [];
       // urlを更新
       url = window.location.href;
     }
@@ -356,7 +356,7 @@ function main() {
     const elements = document.querySelectorAll('article');
     // 要素ごとにループ
     elements.forEach((article) => {
-      const tmp_data = {};
+      const tmpData = {};
       element1 = article.querySelector('div[role=\'group\'][id]');
       element2 = article;
       // __reactProps$で始まるプロパティを探す
@@ -423,76 +423,76 @@ function main() {
         console.log("statusesCount");
         console.log(statusesCount);
         */
-        // tmp_dataを作成
-        tmp_data['lang'] = lang;
-        tmp_data['ariaLabelledby'] = ariaLabelledby;
-        tmp_data['quotedUserName'] = quotedUserName;
-        tmp_data['quotedScreenName'] = quotedScreenName;
-        tmp_data['quotedExpandedUrl'] = quotedExpandedUrl;
-        tmp_data['quotedText'] = quotedText;
-        tmp_data['quotedUserDescription'] = quotedUserDescription;
-        tmp_data['isTranslator'] = isTranslator;
-        tmp_data['translatorType'] = translatorType;
-        tmp_data['isVerified'] = isVerified;
-        tmp_data['isBlueVerified'] = isBlueVerified;
-        tmp_data['favoritesCount'] = favoritesCount;
-        tmp_data['followersCount'] = followersCount;
-        tmp_data['isFollowing'] = isFollowing;
-        tmp_data['friendsCount'] = friendsCount;
-        tmp_data['statusesCount'] = statusesCount;
+        // tmpDataを作成
+        tmpData['lang'] = lang;
+        tmpData['ariaLabelledby'] = ariaLabelledby;
+        tmpData['quotedUserName'] = quotedUserName;
+        tmpData['quotedScreenName'] = quotedScreenName;
+        tmpData['quotedExpandedUrl'] = quotedExpandedUrl;
+        tmpData['quotedText'] = quotedText;
+        tmpData['quotedUserDescription'] = quotedUserDescription;
+        tmpData['isTranslator'] = isTranslator;
+        tmpData['translatorType'] = translatorType;
+        tmpData['isVerified'] = isVerified;
+        tmpData['isBlueVerified'] = isBlueVerified;
+        tmpData['favoritesCount'] = favoritesCount;
+        tmpData['followersCount'] = followersCount;
+        tmpData['isFollowing'] = isFollowing;
+        tmpData['friendsCount'] = friendsCount;
+        tmpData['statusesCount'] = statusesCount;
         // 通報やブロックは行ったかどうか
-        tmp_data['processed'] = false;
+        tmpData['processed'] = false;
 
-        // tweet_datasにtmp_dataを追加(既にある場合は追加しない)
+        // tweetDatasにtmpDataを追加(既にある場合は追加しない)
         let isExist = false;
-        tweet_datas.forEach((tweet_data) => {
-          if (tweet_data['quotedText'] == tmp_data['quotedText']) {
+        tweetDatas.forEach((tweetData) => {
+          if (tweetData['quotedText'] == tmpData['quotedText']) {
             isExist = true;
           }
         });
         if (!isExist) {
-          tweet_datas.push(tmp_data);
+          tweetDatas.push(tmpData);
         }
       }
     });
   }
 
-  // save_props()を実行
-  save_props();
-  // tweet_datasを処理
-  tweet_datas.forEach((tweet_data) => {
-    // tweet_dataが処理済みでない場合
-    if (!tweet_data['processed']) {
+  // saveProps()を実行
+  saveProps();
+  // tweetDatasを処理
+  tweetDatas.forEach((tweetData) => {
+    // tweetDataが処理済みでない場合
+    if (!tweetData['processed']) {
       // スパム確認
-      const spam_result = calc_spam_score(tweet_data);
-      const score = spam_result['score'];
-      const reason = spam_result['reason'];
-      console.log('tweet_data');
-      console.log(tweet_data);
+      const spamResult = calcSpamScore(tweetData);
+      const score = spamResult['score'];
+      const reason = spamResult['reason'];
+      console.log('tweetData');
+      console.log(tweetData);
       console.log('score');
       console.log(score);
       // aria-labelledbyでqueryselectorして背景色を110000にする
-      const tweet_elem = document.querySelector('article[aria-labelledby=\'' + tweet_data['ariaLabelledby'] + '\']');
+      const tweetElem = document.querySelector('article[aria-labelledby=\'' + tweetData['ariaLabelledby'] + '\']');
 
       // scoreが50以上の場合
       if (score >= 50) {
         // 通報
         console.log('通報');
 
-        tweet_elem.style.backgroundColor = '#ff0000';
+        tweetElem.style.backgroundColor = '#ff0000';
       }
       // 理由を表示
-      const reason_elem = document.createElement('div');
-      reason_elem.innerHTML = reason;
+      const reasonElem = document.createElement('div');
+      reasonElem.innerHTML = reason;
       // 要素の外側（下）に追加
-      tweet_elem.after(reason_elem);
-      // tweet_dataを処理済みにする
-      tweet_data['processed'] = true;
+      tweetElem.after(reasonElem);
+      // tweetDataを処理済みにする
+      tweetData['processed'] = true;
     }
   });
 }
 
-// data-testid="primaryColumn"に変更があった場合にsave_props()を実行。console.logでtweet_datasを確認
+// data-testid="primaryColumn"に変更があった場合にsaveProps()を実行。console.logでtweetDatasを確認
 const observer = new MutationObserver(main);
 observer.observe(document.querySelector('body'), {
   childList: true,

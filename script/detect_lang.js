@@ -45,7 +45,7 @@ const characterRanges = {
  * @param {string} text - ツイートのテキスト
  * @return {LangInfo} 推測したツイートの主言語
  */
-function detect_lang(text) {
+function detectLang(text) {
   const langStats = {};
   let totalCount = 0;
 
