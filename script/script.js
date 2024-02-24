@@ -42,11 +42,11 @@ function haveCommonValues(dict1, dict2) {
   const commonValues = new Set();
 
   // 辞書1の値をセットに追加
-  values1.forEach((value) => {
+  for (const value of values1) {
     if (value !== 'unknown') {
       commonValues.add(value);
     }
-  });
+  }
 
   // 辞書2の値と比較して共通値があるかをチェック
   for (const value of values2) {
@@ -67,14 +67,13 @@ function haveCommonValues(dict1, dict2) {
 function calcJapaneseRatio(text) { // eslint-disable-line no-unused-vars
   // 日本語の文字数を求める
   let japaneseCount = 0;
-  for (let i = 0; i < text.length; i++) {
-    if (text[i].match(/[\u3040-\u309F]|[\u30A0-\u30FF]|[\uFF65-\uFF9F]/)) {
+  for (const element of text) {
+    if (/[\u3040-\u309F]|[\u30A0-\u30FF]|[\uFF65-\uFF9F]/.test(element)) {
       japaneseCount++;
     }
   }
   // 日本語の文字数をテキストの文字数で割る
-  const japaneseRatio = japaneseCount / text.length;
-  return japaneseRatio;
+  return japaneseCount / text.length;
 }
 
 /**
@@ -86,14 +85,13 @@ function calcJapaneseRatio(text) { // eslint-disable-line no-unused-vars
 function calcArabicRatio(text) {
   // アラビア語の文字数を求める
   let arabicCount = 0;
-  for (let i = 0; i < text.length; i++) {
-    if (text[i].match(/[\u0600-\u06FF]/)) {
+  for (const element of text) {
+    if (/[\u0600-\u06FF]/.test(element)) {
       arabicCount++;
     }
   }
   // アラビア語の文字数をテキストの文字数で割る
-  const arabicRatio = arabicCount / text.length;
-  return arabicRatio;
+  return arabicCount / text.length;
 }
 
 /**
@@ -105,8 +103,8 @@ function calcArabicRatio(text) {
 function calcEmojiCount(text) {
   // 絵文字の個数を求める
   let emojiCount = 0;
-  for (let i = 0; i < text.length; i++) {
-    if (text[i].match(/\p{Emoji}/u)) {
+  for (const element of text) {
+    if (/\p{Emoji}/u.test(element)) {
       emojiCount++;
     }
   }
@@ -123,8 +121,7 @@ function calcEmojiRatio(text) {
   // 絵文字の個数を求める
   const emojiCount = calcEmojiCount(text);
   // 絵文字の個数をテキストの文字数で割る
-  const emojiRatio = emojiCount / text.length;
-  return emojiRatio;
+  return emojiCount / text.length;
 }
 
 /**
@@ -141,11 +138,11 @@ function checkSpamWord(text) {
   const spamWords = ['お前のプロフ抜けるわ', 'よかったらプロフ見て'];
   // スパムによくある文言が含まれているか確認
   let isSpam = false;
-  spamWords.forEach((spamWord) => {
+  for (const spamWord of spamWords) {
     if (text.includes(spamWord)) {
       isSpam = true;
     }
-  });
+  }
   return isSpam;
 }
 
@@ -324,11 +321,11 @@ function calcSpamScore(tweetData) {
     console.log('tweetDatas[0]["quotedScreenName"]:' + tweetDatas[0]['quotedScreenName']);
     console.log('tweetData["quotedScreenName"]:' + tweetData['quotedScreenName']);
     if (tweetDatas[0]['quotedScreenName'] != tweetData['quotedScreenName']) {
-      tweetDatas.forEach((tweetData2) => {
+      for (const tweetData2 of tweetDatas) {
         if (tweetData2['quotedScreenName'] == tweetData['quotedScreenName']) {
           quotedScreenNameCount++;
         }
-      });
+      }
       if (quotedScreenNameCount >= 2) {
         console.log('リプに同じ人が2個以上いるためスコアを30加算します');
         spamReason+='<p>リプに同じ人が2個以上いる</p>';
@@ -353,7 +350,7 @@ function main() {
   /**
    * ツイートを解析し保存する。
    */
-  function saveProps() {
+  function saveProperties() {
     // urlが変わった場合
     if (url != window.location.href) {
       // tweetDatasを初期化
@@ -364,26 +361,26 @@ function main() {
     // data-testidがcellInnerDivである要素を取得する
     const elements = document.querySelectorAll('article');
     // 要素ごとにループ
-    elements.forEach((article) => {
-      const tmpData = {};
+    for (const article of elements) {
+      const temporaryData = {};
       element1 = article.querySelector('div[role=\'group\'][id]');
       element2 = article;
       // __reactProps$で始まるプロパティを探す
-      const reactPropsName1 = Object
+      const reactPropertiesName1 = Object
           .getOwnPropertyNames(element1)
           .find((n) => n.startsWith('__reactProps$'));
-      const reactPropsName2 = Object
+      const reactPropertiesName2 = Object
           .getOwnPropertyNames(element2)
           .find((n) => n.startsWith('__reactProps$'));
 
       // 該当するプロパティがあれば出力
-      if (reactPropsName1) {
+      if (reactPropertiesName1) {
         // console.log(element1[reactPropsName1]);
-        const reactProps1 = element1[reactPropsName1];
-        const reactProps2 = element2[reactPropsName2];
-        const ariaLabelledby = reactProps2['aria-labelledby'];
+        const reactProperties1 = element1[reactPropertiesName1];
+        const reactProperties2 = element2[reactPropertiesName2];
+        const ariaLabelledby = reactProperties2['aria-labelledby'];
         // eslint-disable-next-line max-len
-        const quotedStatus = reactProps1.children[1].props.retweetWithCommentLink.state.quotedStatus;
+        const quotedStatus = reactProperties1.children[1].props.retweetWithCommentLink.state.quotedStatus;
         const user = quotedStatus.user || {};
         const lang = quotedStatus.lang || null;
         const quotedUserName = user.name ?? null;
@@ -438,43 +435,43 @@ function main() {
         console.log(statusesCount);
         */
         // tmpDataを作成
-        tmpData['lang'] = lang;
-        tmpData['ariaLabelledby'] = ariaLabelledby;
-        tmpData['quotedUserName'] = quotedUserName;
-        tmpData['quotedScreenName'] = quotedScreenName;
-        tmpData['quotedExpandedUrl'] = quotedExpandedUrl;
-        tmpData['quotedText'] = quotedText;
-        tmpData['quotedUserDescription'] = quotedUserDescription;
-        tmpData['isTranslator'] = isTranslator;
-        tmpData['translatorType'] = translatorType;
-        tmpData['isVerified'] = isVerified;
-        tmpData['isBlueVerified'] = isBlueVerified;
-        tmpData['favoritesCount'] = favoritesCount;
-        tmpData['followersCount'] = followersCount;
-        tmpData['isFollowing'] = isFollowing;
-        tmpData['friendsCount'] = friendsCount;
-        tmpData['statusesCount'] = statusesCount;
+        temporaryData['lang'] = lang;
+        temporaryData['ariaLabelledby'] = ariaLabelledby;
+        temporaryData['quotedUserName'] = quotedUserName;
+        temporaryData['quotedScreenName'] = quotedScreenName;
+        temporaryData['quotedExpandedUrl'] = quotedExpandedUrl;
+        temporaryData['quotedText'] = quotedText;
+        temporaryData['quotedUserDescription'] = quotedUserDescription;
+        temporaryData['isTranslator'] = isTranslator;
+        temporaryData['translatorType'] = translatorType;
+        temporaryData['isVerified'] = isVerified;
+        temporaryData['isBlueVerified'] = isBlueVerified;
+        temporaryData['favoritesCount'] = favoritesCount;
+        temporaryData['followersCount'] = followersCount;
+        temporaryData['isFollowing'] = isFollowing;
+        temporaryData['friendsCount'] = friendsCount;
+        temporaryData['statusesCount'] = statusesCount;
         // 通報やブロックは行ったかどうか
-        tmpData['processed'] = false;
+        temporaryData['processed'] = false;
 
         // tweetDatasにtmpDataを追加(既にある場合は追加しない)
         let isExist = false;
-        tweetDatas.forEach((tweetData) => {
-          if (tweetData['quotedText'] == tmpData['quotedText']) {
+        for (const tweetData of tweetDatas) {
+          if (tweetData['quotedText'] == temporaryData['quotedText']) {
             isExist = true;
           }
-        });
+        }
         if (!isExist) {
-          tweetDatas.push(tmpData);
+          tweetDatas.push(temporaryData);
         }
       }
-    });
+    }
   }
 
   // saveProps()を実行
-  saveProps();
+  saveProperties();
   // tweetDatasを処理
-  tweetDatas.forEach((tweetData) => {
+  for (const tweetData of tweetDatas) {
     // tweetDataが処理済みでない場合
     if (!tweetData['processed']) {
       // スパム確認
@@ -486,7 +483,7 @@ function main() {
       console.log('score');
       console.log(score);
       // aria-labelledbyでqueryselectorして背景色を110000にする
-      const tweetElem = document.querySelector(
+      const tweetElement = document.querySelector(
           'article[aria-labelledby=\'' + tweetData['ariaLabelledby'] + '\']',
       );
 
@@ -495,17 +492,17 @@ function main() {
         // 通報
         console.log('通報');
 
-        tweetElem.style.backgroundColor = '#ff0000';
+        tweetElement.style.backgroundColor = '#ff0000';
       }
       // 理由を表示
-      const reasonElem = document.createElement('div');
-      reasonElem.innerHTML = reason;
+      const reasonElement = document.createElement('div');
+      reasonElement.innerHTML = reason;
       // 要素の外側（下）に追加
-      tweetElem.after(reasonElem);
+      tweetElement.after(reasonElement);
       // tweetDataを処理済みにする
       tweetData['processed'] = true;
     }
-  });
+  }
 }
 
 // data-testid="primaryColumn"に変更があった場合にsaveProps()を実行。console.logでtweetDatasを確認
