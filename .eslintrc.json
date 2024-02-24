@@ -3,7 +3,13 @@
     "browser": true,
     "es2021": true
   },
-  "extends": "google",
+  "plugins": [
+    "sonarjs"
+  ],
+  "extends": [
+    "google",
+    "plugin:sonarjs/recommended"
+  ],
   "parserOptions": {
     "ecmaVersion": "latest",
     "sourceType": "module"

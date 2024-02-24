@@ -23,6 +23,7 @@
   },
   "devDependencies": {
     "eslint": "^8.56.0",
-    "eslint-config-google": "^0.14.0"
+    "eslint-config-google": "^0.14.0",
+    "eslint-plugin-sonarjs": "^0.24.0"
   }
 }
