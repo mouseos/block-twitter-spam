@@ -4,10 +4,12 @@
     "es2021": true
   },
   "plugins": [
+    "import",
     "sonarjs"
   ],
   "extends": [
     "google",
+    "plugin:import/recommended",
     "plugin:sonarjs/recommended"
   ],
   "parserOptions": {
