@@ -277,8 +277,8 @@ function calcSpamScore(tweetData) { // eslint-disable-line sonarjs/cognitive-com
     spamScore += 10;
   }
   // プロフィールとツイート本文の言語が異なるかを確認。異なる場合はスコアを10加算する
-  const langTweet = detect_lang(tweetData['quotedText']);
-  const langProfile = detect_lang(tweetData['quotedUserDescription']);
+  const langTweet = detectLang(tweetData['quotedText']);
+  const langProfile = detectLang(tweetData['quotedUserDescription']);
   console.log('lang');
   console.log(langTweet);
   console.log('langProfile');
