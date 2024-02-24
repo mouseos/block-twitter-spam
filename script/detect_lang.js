@@ -55,33 +55,35 @@ function detectLang(text) { // eslint-disable-line no-unused-vars
     let found = false;
 
     for (const lang in characterRanges) {
-      if (!langStats[lang]) {
-        langStats[lang] = 0;
-      }
+      if (characterRanges.hasOwnProperty(lang)) {
+        if (!langStats[lang]) {
+          langStats[lang] = 0;
+        }
 
-      const ranges = characterRanges[lang];
+        const ranges = characterRanges[lang];
 
-      for (let j = 0; j < ranges.length; j++) {
-        const range = ranges[j];
-        if (Array.isArray(range)) {
-          if (charCode >= range[0] && charCode <= range[1]) {
-            langStats[lang]++;
-            totalCount++;
-            found = true;
-            break;
-          }
-        } else {
-          if (charCode >= ranges[0] && charCode <= ranges[1]) {
-            langStats[lang]++;
-            totalCount++;
-            found = true;
-            break;
+        for (let j = 0; j < ranges.length; j++) {
+          const range = ranges[j];
+          if (Array.isArray(range)) {
+            if (charCode >= range[0] && charCode <= range[1]) {
+              langStats[lang]++;
+              totalCount++;
+              found = true;
+              break;
+            }
+          } else {
+            if (charCode >= ranges[0] && charCode <= ranges[1]) {
+              langStats[lang]++;
+              totalCount++;
+              found = true;
+              break;
+            }
           }
         }
-      }
 
-      if (found) {
-        break;
+        if (found) {
+          break;
+        }
       }
     }
 
@@ -94,8 +96,10 @@ function detectLang(text) { // eslint-disable-line no-unused-vars
   // 言語判定
   const langPercentages = [];
   for (const lang in langStats) {
-    const percentage = langStats[lang] / totalCount;
-    langPercentages.push({lang: lang, percentage: percentage});
+    if (langStats.hasOwnProperty(lang)) {
+      const percentage = langStats[lang] / totalCount;
+      langPercentages.push({lang: lang, percentage: percentage});
+    }
   }
 
   // もしlangPercentagesが空の場合、'unknown' を追加
