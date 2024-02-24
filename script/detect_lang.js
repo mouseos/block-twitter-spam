@@ -45,12 +45,14 @@ const characterRanges = {
  * @param {string} text - ツイートのテキスト
  * @return {LangInfo} 推測したツイートの主言語
  */
-function detectLang(text) { // eslint-disable-line no-unused-vars
+function detectLang(text) { // eslint-disable-line no-unused-vars, sonarjs/cognitive-complexity
+  // TODO: sonarjs/cognitive-complexityの解消
   const langStats = {};
   let totalCount = 0;
 
   // 言語ごとの出現数をカウント
   for (let index = 0; index < text.length; index++) {
+    // eslint-disable-next-line unicorn/prefer-code-point
     const charCode = text.charCodeAt(index);
     let found = false;
 

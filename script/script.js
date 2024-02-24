@@ -152,7 +152,8 @@ function checkSpamWord(text) {
  * @param {TweetData} tweetData - ツイートのデータ
  * @return {SpamInfo} スパム判定の結果
  */
-function calcSpamScore(tweetData) {
+function calcSpamScore(tweetData) { // eslint-disable-line sonarjs/cognitive-complexity
+  // TODO: sonarjs/cognitive-complexityの解消
   // tweetDataの例
   /*
     {
@@ -350,7 +351,8 @@ function main() {
   /**
    * ツイートを解析し保存する。
    */
-  function saveProperties() {
+  function saveProperties() { // eslint-disable-line unicorn/consistent-function-scoping
+    // TODO: unicorn/consistent-function-scopingの解消
     // urlが変わった場合
     if (url != window.location.href) {
       // tweetDatasを初期化
