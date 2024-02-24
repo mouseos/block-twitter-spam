@@ -160,12 +160,17 @@ function calcSpamScore(tweetData) {
   /*
     {
     "lang": "ja",
-    "ariaLabelledby": "id__z46i4w6tmvs id__a1rdb67xket id__0xlad3oysjs id__cs8tmlew9o id__a95mattlpor id__abzezc8k98 id__h0fs7z4mqwp id__qab83krya1r id__72bg0ewzfjd id__0bb3h6ghsqbo id__v8dftwo78r id__6eosoon75ic id__147wubxzoj3 id__ih8kimy90k id__ofqsktnynbn id__abxgt7ktwqq id__4gyjom0ly1z id__wnua460vu47 id__bp4igofpjus",
+    "ariaLabelledby": "id__z46i4w6tmvs id__a1rdb67xket id__0xlad3oysjs id__cs8tmlew9o "
+        + "id__a95mattlpor id__abzezc8k98 id__h0fs7z4mqwp id__qab83krya1r id__72bg0ewzfjd "
+        + "id__0bb3h6ghsqbo id__v8dftwo78r id__6eosoon75ic id__147wubxzoj3 id__ih8kimy90k "
+        + "id__ofqsktnynbn id__abxgt7ktwqq id__4gyjom0ly1z id__wnua460vu47 id__bp4igofpjus",
     "quotedUserName": "ゆう🖱🐭💕🐰💻 ROM焼き 修理代行受付中",
     "quotedScreenName": "mouse_soft_y",
     "quotedExpandedUrl": "https://www.amazon.jp/hz/wishlist/ls/1AYDYDDWH3NZG?ref_=wl_share",
     "quotedText": "内部API利用でスパム検出精度が上がった https://t.co/TaHYgNQgu1",
-    "quotedUserDescription": "サブ垢:@mouse_soft_y_en\n改造とソフトウェア開発。rom焼き、改造、修理、ウイルス除去代行受付中です。相談は無料。希望者はDMへ（依頼が多く返信遅れます）\nソフト販売中。天安門事件（スパム避け）\n\nSapporo City FM、SmileTabLabo wiki運営",
+    "quotedUserDescription": "サブ垢:@mouse_soft_y_en\n"
+        + "改造とソフトウェア開発。rom焼き、改造、修理、ウイルス除去代行受付中です。相談は無料。希望者はDMへ（依頼が多く返信遅れます）\n"
+        + "ソフト販売中。天安門事件（スパム避け）\n\nSapporo City FM、SmileTabLabo wiki運営",
     "isTranslator": false,
     "translatorType": "none",
     "isVerified": false,
@@ -360,8 +365,12 @@ function main() {
       element1 = article.querySelector('div[role=\'group\'][id]');
       element2 = article;
       // __reactProps$で始まるプロパティを探す
-      const reactPropsName1 = Object.getOwnPropertyNames(element1).find((n) => n.startsWith('__reactProps$'));
-      const reactPropsName2 = Object.getOwnPropertyNames(element2).find((n) => n.startsWith('__reactProps$'));
+      const reactPropsName1 = Object
+          .getOwnPropertyNames(element1)
+          .find((n) => n.startsWith('__reactProps$'));
+      const reactPropsName2 = Object
+          .getOwnPropertyNames(element2)
+          .find((n) => n.startsWith('__reactProps$'));
 
       // 該当するプロパティがあれば出力
       if (reactPropsName1) {
@@ -369,6 +378,7 @@ function main() {
         const reactProps1 = element1[reactPropsName1];
         const reactProps2 = element2[reactPropsName2];
         const ariaLabelledby = reactProps2['aria-labelledby'];
+        // eslint-disable-next-line max-len
         const quotedStatus = reactProps1.children[1].props.retweetWithCommentLink.state.quotedStatus;
         const user = quotedStatus.user || {};
         const lang = quotedStatus.lang || null;
@@ -472,7 +482,9 @@ function main() {
       console.log('score');
       console.log(score);
       // aria-labelledbyでqueryselectorして背景色を110000にする
-      const tweetElem = document.querySelector('article[aria-labelledby=\'' + tweetData['ariaLabelledby'] + '\']');
+      const tweetElem = document.querySelector(
+          'article[aria-labelledby=\'' + tweetData['ariaLabelledby'] + '\']',
+      );
 
       // scoreが50以上の場合
       if (score >= 50) {
