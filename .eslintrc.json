@@ -5,18 +5,27 @@
   },
   "plugins": [
     "import",
-    "sonarjs"
+    "sonarjs",
+    "unicorn"
   ],
   "extends": [
     "google",
     "plugin:import/recommended",
-    "plugin:sonarjs/recommended"
+    "plugin:sonarjs/recommended",
+    "plugin:unicorn/recommended"
   ],
   "parserOptions": {
     "ecmaVersion": "latest",
     "sourceType": "module"
   },
   "rules": {
-    "max-len": ["warn", { "code": 100 }]
+    "max-len": ["warn", { "code": 100 }],
+    "unicorn/catch-error-name": ["error", { "name": "err" }],
+    "unicorn/expiring-todo-comments": "off",
+    "unicorn/filename-case": ["error", { "case": "snakeCase" }],
+    "unicorn/no-empty-file": "off",
+    "unicorn/no-negated-condition": "off",
+    "unicorn/no-null": "off",
+    "unicorn/prevent-abbreviations": "warn"
   }
 }
