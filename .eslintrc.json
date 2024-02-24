@@ -6,7 +6,8 @@
   "plugins": [
     "import",
     "sonarjs",
-    "unicorn"
+    "unicorn",
+    "unused-imports"
   ],
   "extends": [
     "google",
@@ -20,6 +21,7 @@
   },
   "rules": {
     "max-len": ["warn", { "code": 100 }],
+    "unused-imports/no-unused-imports": "error",
     "unicorn/catch-error-name": ["error", { "name": "err" }],
     "unicorn/expiring-todo-comments": "off",
     "unicorn/filename-case": ["error", { "case": "snakeCase" }],
