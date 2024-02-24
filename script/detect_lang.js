@@ -45,7 +45,7 @@ const characterRanges = {
  * @param {string} text - ツイートのテキスト
  * @return {LangInfo} 推測したツイートの主言語
  */
-function detectLang(text) {
+function detectLang(text) { // eslint-disable-line no-unused-vars
   const langStats = {};
   let totalCount = 0;
 

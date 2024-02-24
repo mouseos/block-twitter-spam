@@ -64,7 +64,7 @@ function haveCommonValues(dict1, dict2) {
  * @param {string} text - 判定するテキスト
  * @return {number} 日本語の割合
  */
-function calcJapaneseRatio(text) {
+function calcJapaneseRatio(text) { // eslint-disable-line no-unused-vars
   // 日本語の文字数を求める
   let japaneseCount = 0;
   for (let i = 0; i < text.length; i++) {
@@ -184,6 +184,7 @@ function calcSpamScore(tweetData) {
 }
     */
   // フォローしているか確認
+  // eslint-disable-next-line no-unused-vars
   const isFollowing = tweetData['isFollowing'];
   // spamScoreを計算する
   let spamScore = 0;
@@ -197,10 +198,13 @@ function calcSpamScore(tweetData) {
   // ツイート本文の絵文字の割合を求める
   const emojiRatio = calcEmojiRatio(tweetData['quotedText']);
   // プロフィール文のアラビア語の割合を求める
+  // eslint-disable-next-line no-unused-vars
   const arabicRatioProfile = calcArabicRatio(tweetData['quotedUserDescription']);
   // プロフィール文の文字数を求める
+  // eslint-disable-next-line no-unused-vars
   const profileLength = tweetData['quotedUserDescription'].length;
   // ユーザー名のアラビア語の割合を求める
+  // eslint-disable-next-line no-unused-vars
   const arabicRatioName = calcArabicRatio(tweetData['quotedUserName']);
   // スコアを計算する
   // スパムが多い国の言語(jaかen以外)の場合
