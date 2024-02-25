@@ -1,0 +1,33 @@
+{
+  "name": "block-twitter-spam",
+  "version": "0.1.0",
+  "private": true,
+  "description": "",
+  "homepage": "https://github.com/mouseos/block-twitter-spam",
+  "bugs": {
+    "url": "https://github.com/mouseos/block-twitter-spam/issues"
+  },
+  "license": "",
+  "author": {
+    "name": "yuu"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mouseos/block-twitter-spam.git"
+  },
+  "scripts": {
+    "build": "echo \"Error: no build specified\" && exit 1",
+    "lint": "eslint .",
+    "lint:fix": "eslint --fix .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "devDependencies": {
+    "eslint": "^8.56.0",
+    "eslint-config-google": "^0.14.0",
+    "eslint-plugin-import": "^2.29.1",
+    "eslint-plugin-jsdoc": "^48.2.0",
+    "eslint-plugin-sonarjs": "^0.24.0",
+    "eslint-plugin-unicorn": "^51.0.1",
+    "eslint-plugin-unused-imports": "^3.1.0"
+  }
+}

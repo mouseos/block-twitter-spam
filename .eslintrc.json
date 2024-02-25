@@ -1,0 +1,49 @@
+{
+  "env": {
+    "browser": true,
+    "es2021": true
+  },
+  "plugins": [
+    "import",
+    "jsdoc",
+    "sonarjs",
+    "unicorn",
+    "unused-imports"
+  ],
+  "extends": [
+    "google",
+    "plugin:import/recommended",
+    "plugin:jsdoc/recommended",
+    "plugin:sonarjs/recommended",
+    "plugin:unicorn/recommended"
+  ],
+  "parserOptions": {
+    "ecmaVersion": "latest",
+    "sourceType": "module"
+  },
+  "rules": {
+    "jsdoc/tag-lines": "off",
+    "jsdoc/check-alignment": "off",
+    "jsdoc/require-returns": "off",
+    "max-len": ["warn", { "code": 100 }],
+    "unused-imports/no-unused-imports": "error",
+    "unicorn/catch-error-name": ["error", { "name": "err" }],
+    "unicorn/expiring-todo-comments": "off",
+    "unicorn/filename-case": ["error", { "case": "snakeCase" }],
+    "unicorn/no-empty-file": "off",
+    "unicorn/no-negated-condition": "off",
+    "unicorn/no-null": "off",
+    "unicorn/prevent-abbreviations": "warn"
+  },
+  "settings": {
+    "jsdoc": {
+      "tagNamePreference": {
+        "return": "return"
+      },
+      "preferredTypes": {
+        "object": "Object",
+        "Object": "object"
+      }
+    }
+  }
+}
